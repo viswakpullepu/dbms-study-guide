@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DBMS Exam Revision Notes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to notes</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <span class="brand-title">DBMS Exam Notes</span>
+        <span class="brand-meta" id="progress-status">0 of 4 modules reviewed</span>
+      </div>
+
+      <nav class="main-nav" aria-label="Module navigation">
+        <a href="#module-1">1. SQL</a>
+        <a href="#module-2">2. Schema &amp; FDs</a>
+        <a href="#module-3">3. Storage &amp; Indexes</a>
+        <a href="#module-4">4. Transactions</a>
+        <a href="#traps">Exam Traps</a>
+        <a href="#quiz">Practice Quiz</a>
+        <a href="questions.html" class="nav-highlight">Question Bank (110)</a>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="btn-outline" id="theme-toggle" aria-pressed="false">
+          Invert Theme
+        </button>
+        <button type="button" class="btn-solid" id="print-btn">
+          Print Notes
+        </button>
+      </div>
+    </div>
+
+    <div class="toolbar-inner">
+      <label class="search-wrap" for="topic-search">
+        <span class="sr-only">Filter topics by keyword</span>
+        <input
+          id="topic-search"
+          type="search"
+          placeholder="Filter topics (e.g. lossless, sparse, precedence, WAL, LIKE)..."
+          autocomplete="off"
+        >
+      </label>
+      <span class="filter-count" id="filter-status" aria-live="polite">Showing all 15 topics</span>
+      <button type="button" class="btn-text" id="clear-search" hidden>Clear</button>
+    </div>
+  </header>
+
+  <main id="main-content" class="page-wrap">
+    <section class="hero">
+      <h1>Database Management Systems</h1>
+      <p class="hero-lead">
+        Structured revision guide synthesized from all 8 lecture decks (159 slides): SQL queries,
+        relational decomposition, external storage and indexing, concurrency control, and crash recovery.
+      </p>
+      <div class="summary-strip" aria-label="Course overview">
+        <div class="summary-cell">
+          <span class="summary-label">Source Decks</span>
+          <span class="summary-value">8 Presentations</span>
+        </div>
+        <div class="summary-cell">
+          <span class="summary-label">Core Modules</span>
+          <span class="summary-value">4 Exam Units</span>
+        </div>
+        <div class="summary-cell">
+          <span class="summary-label">Slide Corrections</span>
+          <span class="summary-value">5 Flagged Traps</span>
+        </div>
+        <div class="summary-cell">
+          <span class="summary-label">Self-Check</span>
+          <span class="summary-value">8 Practice Questions</span>
+        </div>
+      </div>
+    </section>
+
+    <div id="empty-state" class="empty-state" hidden>
+      <p id="empty-message">No topics matched your search.</p>
+      <button type="button" class="btn-solid" id="empty-reset">Show all topics</button>
+    </div>
+
+    <!-- MODULE 1 -->
+    <section id="module-1" class="module-section" data-module="1">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Module 01</span>
+          <h2>SQL Queries, Set Operations &amp; Constraints</h2>
+        </div>
+        <button type="button" class="review-toggle" data-review="1" aria-pressed="false">
+          Mark Reviewed
+        </button>
+      </div>
+
+      <article class="topic-card" data-keywords="sql select from where group by having order by join distinct">
+        <h3>1.1 Basic SQL Query Structure</h3>
+        <p>
+          Data retrieval combines clauses in a strict logical order. The key exam distinction is
+          when filtering happens: <code>WHERE</code> filters individual rows before grouping,
+          whereas <code>HAVING</code> filters aggregated groups after <code>GROUP BY</code>.
+        </p>
+        <pre><code>SELECT [DISTINCT] column1, column2
+FROM table_name
+WHERE row_condition
+GROUP BY column1
+HAVING group_condition
+ORDER BY column1 ASC | DESC;</code></pre>
+        <ul class="key-list">
+          <li><strong>SELECT / DISTINCT:</strong> Picks columns and optionally removes duplicate rows.</li>
+          <li><strong>JOIN:</strong> Combines rows across two or more tables using related columns.</li>
+          <li><strong>Aggregates:</strong> <code>COUNT(*)</code>, <code>SUM(col)</code>, <code>AVG(col)</code>, <code>MIN(col)</code>, <code>MAX(col)</code> summarize groups into one value.</li>
+        </ul>
+      </article>
+
+      <article class="topic-card" data-keywords="like wildcard percent underscore pattern matching sql">
+        <h3>1.2 Pattern Matching with LIKE</h3>
+        <p>The <code>LIKE</code> operator in a <code>WHERE</code> clause matches string patterns using two wildcards:</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Wildcard</th>
+                <th>Meaning</th>
+                <th>Example</th>
+                <th>Matches</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>%</code></td>
+                <td>Zero, one, or many characters</td>
+                <td><code>FirstName LIKE 'Ma%'</code></td>
+                <td>Names starting with "Ma"</td>
+              </tr>
+              <tr>
+                <td><code>%...%</code></td>
+                <td>Substring anywhere</td>
+                <td><code>BookTitle LIKE '%life%'</code></td>
+                <td>Titles containing "life"</td>
+              </tr>
+              <tr>
+                <td><code>_</code></td>
+                <td>Exactly one character</td>
+                <td><code>Word LIKE 'h_l__'</code></td>
+                <td>5-letter words with 'h' at 1st and 'l' at 3rd</td>
+              </tr>
+              <tr>
+                <td><code>_</code> + <code>%</code></td>
+                <td>Combined fixed + variable length</td>
+                <td><code>col LIKE 'A__o%'</code></td>
+                <td>Starts with 'A', any 2 chars, then 'o'</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="topic-card" data-keywords="union union all intersect except set operators left join mysql">
+        <h3>1.3 Set Operators</h3>
+        <p>
+          All set operators require <strong>union compatibility</strong>: both <code>SELECT</code> statements
+          must return the same number of columns, in the same order, with compatible data types.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Operator</th>
+                <th>Behavior</th>
+                <th>Duplicates</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>UNION</code></td>
+                <td>Combines result sets of two queries</td>
+                <td>Removed by default</td>
+              </tr>
+              <tr>
+                <td><code>UNION ALL</code></td>
+                <td>Combines result sets without sorting/deduping</td>
+                <td>Kept (faster)</td>
+              </tr>
+              <tr>
+                <td><code>INTERSECT</code></td>
+                <td>Only rows present in both queries</td>
+                <td>Removed</td>
+              </tr>
+              <tr>
+                <td><code>EXCEPT</code></td>
+                <td>Rows in 1st query that are absent from 2nd</td>
+                <td>Removed</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note-line">
+          <strong>Older MySQL workaround for EXCEPT:</strong> Use <code>SELECT t1.id FROM t1 LEFT JOIN t2 ON t1.id = t2.id WHERE t2.id IS NULL;</code>
+        </p>
+      </article>
+
+      <article class="topic-card" data-keywords="integrity constraints check primary key foreign composite trigger stored procedure">
+        <h3>1.4 Complex Integrity Constraints</h3>
+        <ul class="key-list">
+          <li><strong>CHECK Constraint:</strong> Enforces value ranges or patterns, e.g. <code>Age INT CHECK (Age &gt;= 18 AND Age &lt;= 30)</code> or <code>Email LIKE '%@%.%'</code>.</li>
+          <li><strong>Composite Keys:</strong> Apply uniqueness or referential integrity across multiple columns: <code>PRIMARY KEY (OrderID, ProductID)</code> paired with separate <code>FOREIGN KEY</code> rules.</li>
+          <li><strong>Stored Procedures:</strong> Reusable procedural blocks invoked explicitly to validate complex multi-step rules before writes.</li>
+          <li><strong>Triggers:</strong> Procedural code that executes <em>automatically</em> in response to <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> events on a table or view.</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- MODULE 2 -->
+    <section id="module-2" class="module-section" data-module="2">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Module 02</span>
+          <h2>Schema Refinement, Functional Dependencies &amp; Decomposition</h2>
+        </div>
+        <button type="button" class="review-toggle" data-review="2" aria-pressed="false">
+          Mark Reviewed
+        </button>
+      </div>
+
+      <article class="topic-card" data-keywords="redundancy anomalies update insertion deletion schema refinement orders customers">
+        <h3>2.1 Redundancy and the 3 Data Anomalies</h3>
+        <p>
+          Storing repeated customer attributes inside an unnormalized <code>Orders(OrderID, CustomerName, Product, CustomerAddress)</code> table wastes disk space, slows updates, risks integrity, and causes three classic anomalies:
+        </p>
+        <div class="grid-3">
+          <div class="mini-card">
+            <h4>Update Anomaly</h4>
+            <p>Changing Madhu's address requires editing every order row for Madhu. Missing one row leaves contradictory data.</p>
+          </div>
+          <div class="mini-card">
+            <h4>Insertion Anomaly</h4>
+            <p>Inserting a new order forces repeating the customer's name and address again (and a customer cannot be recorded without an order).</p>
+          </div>
+          <div class="mini-card">
+            <h4>Deletion Anomaly</h4>
+            <p>Deleting an order row can accidentally erase the customer's address if it was their only order in the table.</p>
+          </div>
+        </div>
+        <p class="note-line">
+          <strong>Solution:</strong> Decompose into <code>Customers(CustomerID, CustomerName, CustomerAddress)</code> and <code>Orders(OrderID, CustomerID, Product)</code>.
+        </p>
+      </article>
+
+      <article class="topic-card" data-keywords="functional dependency trivial full transitive closure attribute x+ superkey">
+        <h3>2.2 Functional Dependencies (FDs) and Closure</h3>
+        <p>
+          A functional dependency <code>X -&gt; Y</code> holds on relation <code>R</code> if whenever two tuples agree on <code>X</code>, they must also agree on <code>Y</code> (e.g., <code>sid -&gt; sname</code>, <code>zipcode -&gt; cityname</code>).
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>FD Concept</th>
+                <th>Rule</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Trivial FD</strong></td>
+                <td><code>Y</code> is a subset of <code>X</code> (always holds)</td>
+                <td><code>AB -&gt; A</code>, <code>ABC -&gt; AC</code></td>
+              </tr>
+              <tr>
+                <td><strong>Full Functional Dependency</strong></td>
+                <td><code>Y</code> depends on <code>X</code> and on no proper subset of <code>X</code></td>
+                <td><code>(StudentID, CourseID) -&gt; Instructor</code></td>
+              </tr>
+              <tr>
+                <td><strong>Transitive Dependency</strong></td>
+                <td>If <code>A -&gt; B</code> and <code>B -&gt; C</code>, then <code>C</code> depends transitively on <code>A</code></td>
+                <td><code>EmployeeID -&gt; Department -&gt; DepartmentLocation</code></td>
+              </tr>
+              <tr>
+                <td><strong>Attribute Closure (<code>X+</code>)</strong></td>
+                <td>Set of all attributes functionally determined by <code>X</code></td>
+                <td>Given <code>{A -&gt; B, B -&gt; C}</code>, <code>A+ = {A, B, C}</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note-line">
+          <strong>Superkey test:</strong> Compute <code>X+</code>. If <code>X+</code> contains every attribute of relation <code>R</code>, then <code>X</code> is a superkey of <code>R</code>.
+        </p>
+      </article>
+
+      <article class="topic-card" data-keywords="decomposition lossless lossy spurious tuples dependency preservation redundancy">
+        <h3>2.3 Lossless vs. Lossy Decomposition</h3>
+        <p>
+          Decomposition splits a relation <code>R</code> into sub-relations <code>R1, R2</code>. Every valid decomposition should aim for three properties:
+        </p>
+        <ul class="key-list">
+          <li><strong>Lossless Join (Mandatory):</strong> Joining <code>R1</code> and <code>R2</code> reconstructs the exact original relation <code>R</code> with zero missing rows and zero extra (spurious) rows. Test: <code>(R1 ∩ R2) -&gt; R1</code> or <code>(R1 ∩ R2) -&gt; R2</code> must hold.</li>
+          <li><strong>Lossy Join (Avoid):</strong> When the common attribute is not a key of either sub-relation, the natural join creates false <em>spurious tuples</em> that were never in the original table.</li>
+          <li><strong>Dependency Preservation:</strong> Every functional dependency can be checked within a single decomposed table without running a cross-table join.</li>
+          <li><strong>Lack of Data Redundancy:</strong> Duplicate attributes are minimized across sub-relations.</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- MODULE 3 -->
+    <section id="module-3" class="module-section" data-module="3">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Module 03</span>
+          <h2>External Storage, File Organizations &amp; Indexing</h2>
+        </div>
+        <button type="button" class="review-toggle" data-review="3" aria-pressed="false">
+          Mark Reviewed
+        </button>
+      </div>
+
+      <article class="topic-card" data-keywords="storage hierarchy registers cache ram ssd hdd magnetic tape cloud primary secondary tertiary quaternary">
+        <h3>3.1 Storage System Hierarchy</h3>
+        <p>Ordered from fastest and costliest per byte to slowest and largest capacity:</p>
+        <ol class="ordered-steps">
+          <li><strong>Primary Storage (Volatile):</strong> CPU Registers, Cache (L1/L2/L3), Main Memory (RAM).</li>
+          <li><strong>Secondary Storage (Non-volatile):</strong> Flash Storage (SSDs, no moving parts) and Magnetic Disks (HDDs: tracks, sectors, cylinders).</li>
+          <li><strong>Tertiary / Off-line Storage:</strong> Optical Disks (CD/DVD/Blu-Ray) and Magnetic Tapes (sequential access for backups and archival).</li>
+          <li><strong>Quaternary Storage:</strong> Remote / Cloud Storage accessed over networks.</li>
+        </ol>
+      </article>
+
+      <article class="topic-card" data-keywords="file organization sequential hash direct indexed isam overflow area bucket collision">
+        <h3>3.2 File Organizations and ISAM</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>Mechanism</th>
+                <th>Strength</th>
+                <th>Weakness</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Sequential</strong></td>
+                <td>Sorted by key in contiguous storage</td>
+                <td>Fast batch processing; simple</td>
+                <td>Slow random lookup; shifting cost on mid-file insert/delete</td>
+              </tr>
+              <tr>
+                <td><strong>Direct / Hashed</strong></td>
+                <td>Hash function maps key to bucket address</td>
+                <td>O(1) equality search; uniform spread</td>
+                <td>Poor for range queries; collisions and expensive rehashing</td>
+              </tr>
+              <tr>
+                <td><strong>Indexed</strong></td>
+                <td>Primary data file + auxiliary key-pointer file</td>
+                <td>Fast random and range searches</td>
+                <td>Extra disk space; index maintenance overhead on writes</td>
+              </tr>
+              <tr>
+                <td><strong>ISAM</strong></td>
+                <td>Sorted Data File + static Index File + Overflow Area</td>
+                <td>Supports both sequential and direct access (~2 disk I/Os)</td>
+                <td>Overflow area fills up; requires periodic reorganization</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="topic-card" data-keywords="index dense sparse primary secondary clustered non-clustered bitmap b+ tree block anchor">
+        <h3>3.3 Indexing Taxonomy and Diagrams</h3>
+        <p>
+          An index entry pairs a <code>Search Key</code> with a <code>Data Reference</code> (block/record pointer).
+        </p>
+
+        <div class="diagram-box">
+          <p class="diagram-caption">Dense vs. Sparse Primary Index (2 records per block)</p>
+          <svg viewBox="0 0 680 185" role="img" aria-label="Comparison diagram showing Dense Primary Index pointing to every key 1001, 1003, 1007, 1010 versus Sparse Primary Index pointing only to block anchors 1001 and 1007">
+            <rect x="1" y="1" width="678" height="183" fill="#ffffff" stroke="#e2e2e2"/>
+            <!-- Left: Dense -->
+            <text x="165" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#111111">DENSE INDEX (Entry per key)</text>
+            <rect x="24" y="42" width="110" height="24" fill="#f7f7f7" stroke="#111111"/>
+            <text x="79" y="58" text-anchor="middle" font-size="11" fill="#111111">1001 | ptr</text>
+            <rect x="24" y="66" width="110" height="24" fill="#f7f7f7" stroke="#111111"/>
+            <text x="79" y="82" text-anchor="middle" font-size="11" fill="#111111">1003 | ptr</text>
+            <rect x="24" y="90" width="110" height="24" fill="#f7f7f7" stroke="#111111"/>
+            <text x="79" y="106" text-anchor="middle" font-size="11" fill="#111111">1007 | ptr</text>
+            <rect x="24" y="114" width="110" height="24" fill="#f7f7f7" stroke="#111111"/>
+            <text x="79" y="130" text-anchor="middle" font-size="11" fill="#111111">1010 | ptr</text>
+
+            <rect x="195" y="42" width="116" height="48" fill="#ffffff" stroke="#111111"/>
+            <text x="253" y="61" text-anchor="middle" font-size="11" fill="#111111">Block 1: 1001, Madhu</text>
+            <text x="253" y="80" text-anchor="middle" font-size="11" fill="#111111">1003, Mahi</text>
+            <rect x="195" y="104" width="116" height="48" fill="#ffffff" stroke="#111111"/>
+            <text x="253" y="123" text-anchor="middle" font-size="11" fill="#111111">Block 2: 1007, Ramu</text>
+            <text x="253" y="142" text-anchor="middle" font-size="11" fill="#111111">1010, Durga</text>
+
+            <line x1="134" y1="54" x2="195" y2="54" stroke="#111111" stroke-width="1.3"/>
+            <line x1="134" y1="78" x2="195" y2="78" stroke="#111111" stroke-width="1.3"/>
+            <line x1="134" y1="102" x2="195" y2="118" stroke="#111111" stroke-width="1.3"/>
+            <line x1="134" y1="126" x2="195" y2="140" stroke="#111111" stroke-width="1.3"/>
+
+            <!-- Divider -->
+            <line x1="340" y1="16" x2="340" y2="168" stroke="#e2e2e2" stroke-dasharray="4 3"/>
+
+            <!-- Right: Sparse -->
+            <text x="510" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#111111">SPARSE INDEX (Block anchor only)</text>
+            <rect x="366" y="42" width="110" height="24" fill="#111111" stroke="#111111"/>
+            <text x="421" y="58" text-anchor="middle" font-size="11" fill="#ffffff">1001 | Block 1</text>
+            <rect x="366" y="66" width="110" height="24" fill="#111111" stroke="#111111"/>
+            <text x="421" y="82" text-anchor="middle" font-size="11" fill="#ffffff">1007 | Block 2</text>
+
+            <rect x="537" y="42" width="118" height="48" fill="#ffffff" stroke="#111111"/>
+            <text x="596" y="61" text-anchor="middle" font-size="11" fill="#111111">Block 1: 1001, Madhu</text>
+            <text x="596" y="80" text-anchor="middle" font-size="11" fill="#555555">1003, Mahi</text>
+            <rect x="537" y="104" width="118" height="48" fill="#ffffff" stroke="#111111"/>
+            <text x="596" y="123" text-anchor="middle" font-size="11" fill="#111111">Block 2: 1007, Ramu</text>
+            <text x="596" y="142" text-anchor="middle" font-size="11" fill="#555555">1010, Durga</text>
+
+            <line x1="476" y1="54" x2="537" y2="54" stroke="#111111" stroke-width="1.5"/>
+            <line x1="476" y1="78" x2="537" y2="118" stroke="#111111" stroke-width="1.5"/>
+          </svg>
+        </div>
+
+        <ul class="key-list">
+          <li><strong>Clustered vs. Non-Clustered:</strong> A <em>Clustered Index</em> dictates the physical storage order of rows on disk (<strong>max 1 per table</strong>; great for range scans; slows inserts/updates). A <em>Non-Clustered Index</em> has logical order independent of physical order (<strong>multiple allowed per table</strong>; needs an extra lookup).</li>
+          <li><strong>Multi-level, Bitmap, B+ Trees:</strong> Multi-level indexes index the index to reduce disk I/Os. Bitmap indexes use bit arrays for low-cardinality data warehouse columns. B+ trees keep balanced logarithmic height for disk access.</li>
+        </ul>
+      </article>
+
+      <article class="topic-card" data-keywords="performance tuning comparison granularity resource usage query efficiency complexity">
+        <h3>3.4 File Organization vs. Indexing vs. Performance Tuning</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Dimension</th>
+                <th>File Organization</th>
+                <th>Indexing</th>
+                <th>Performance Tuning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Granularity</strong></td>
+                <td>File level</td>
+                <td>Table / column level</td>
+                <td>Holistic (queries, indexes, caching, sharding, denormalization)</td>
+              </tr>
+              <tr>
+                <td><strong>Resource Focus</strong></td>
+                <td>Disk space efficiency</td>
+                <td>Disk + Memory</td>
+                <td>CPU, Memory, Disk, and Network bandwidth</td>
+              </tr>
+              <tr>
+                <td><strong>Query Impact</strong></td>
+                <td>Disk read/write speed</td>
+                <td>Fast data retrieval</td>
+                <td>Both read and write optimization</td>
+              </tr>
+              <tr>
+                <td><strong>Complexity</strong></td>
+                <td>Straightforward</td>
+                <td>Moderate to complex</td>
+                <td>Highest (requires full system understanding)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- MODULE 4 -->
+    <section id="module-4" class="module-section" data-module="4">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Module 04</span>
+          <h2>Transactions, Concurrency Control &amp; Crash Recovery</h2>
+        </div>
+        <button type="button" class="review-toggle" data-review="4" aria-pressed="false">
+          Mark Reviewed
+        </button>
+      </div>
+
+      <article class="topic-card" data-keywords="acid atomicity consistency isolation durability transaction states active partially committed failed aborted terminated">
+        <h3>4.1 ACID Properties and Transaction Lifecycle</h3>
+        <p>
+          <strong>Atomicity</strong> (all or nothing), <strong>Consistency</strong> (valid state to valid state),
+          <strong>Isolation</strong> (concurrent execution matches serial outcome), and
+          <strong>Durability</strong> (committed writes persist after crashes).
+        </p>
+
+        <div class="diagram-box">
+          <p class="diagram-caption">Transaction State Transition Diagram</p>
+          <svg viewBox="0 0 680 170" role="img" aria-label="Transaction states: Active goes to Partially Committed or Failed; Partially Committed goes to Committed or Failed; Failed rolls back to Aborted; Committed and Aborted go to Terminated">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#111111"/>
+              </marker>
+            </defs>
+            <rect x="1" y="1" width="678" height="168" fill="#ffffff" stroke="#e2e2e2"/>
+
+            <rect x="20" y="65" width="96" height="36" rx="4" fill="#111111"/>
+            <text x="68" y="87" text-anchor="middle" font-size="11" font-weight="600" fill="#ffffff">Active</text>
+
+            <rect x="180" y="22" width="136" height="36" rx="4" fill="#f7f7f7" stroke="#111111"/>
+            <text x="248" y="44" text-anchor="middle" font-size="11" font-weight="600" fill="#111111">Partially Committed</text>
+
+            <rect x="195" y="112" width="106" height="36" rx="4" fill="#f7f7f7" stroke="#111111"/>
+            <text x="248" y="134" text-anchor="middle" font-size="11" font-weight="600" fill="#111111">Failed</text>
+
+            <rect x="380" y="22" width="106" height="36" rx="4" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+            <text x="433" y="44" text-anchor="middle" font-size="11" font-weight="600" fill="#111111">Committed</text>
+
+            <rect x="380" y="112" width="106" height="36" rx="4" fill="#ffffff" stroke="#111111" stroke-width="1.5"/>
+            <text x="433" y="134" text-anchor="middle" font-size="11" font-weight="600" fill="#111111">Aborted</text>
+
+            <rect x="548" y="65" width="110" height="36" rx="4" fill="#111111"/>
+            <text x="603" y="87" text-anchor="middle" font-size="11" font-weight="600" fill="#ffffff">Terminated</text>
+
+            <line x1="116" y1="74" x2="178" y2="44" stroke="#111111" stroke-width="1.3" marker-end="url(#arrow)"/>
+            <text x="140" y="48" font-size="9" fill="#555555">End op</text>
+
+            <line x1="116" y1="92" x2="193" y2="128" stroke="#111111" stroke-width="1.3" marker-end="url(#arrow)"/>
+            <text x="136" y="122" font-size="9" fill="#555555">Failure</text>
+
+            <line x1="248" y1="58" x2="248" y2="110" stroke="#111111" stroke-width="1.3" marker-end="url(#arrow)"/>
+            <text x="254" y="88" font-size="9" fill="#555555">Failure</text>
+
+            <line x1="316" y1="40" x2="378" y2="40" stroke="#111111" stroke-width="1.3" marker-end="url(#arrow)"/>
+            <text x="347" y="34" text-anchor="middle" font-size="9" fill="#555555">Store</text>
+
+            <line x1="301" y1="130" x2="378" y2="130" stroke="#111111" stroke-width="1.3" marker-end="url(#arrow)"/>
+            <text x="339" y="124" text-anchor="middle" font-size="9" fill="#555555">Rollback</text>
+
+            <line x1="486" y1="40" x2="546" y2="75" stroke="#111111" stroke-width="1.3" marker-end="url(#arrow)"/>
+            <line x1="486" y1="130" x2="546" y2="92" stroke="#111111" stroke-width="1.3" marker-end="url(#arrow)"/>
+          </svg>
+        </div>
+      </article>
+
+      <article class="topic-card" data-keywords="concurrent execution lost update dirty read unrepeatable read serializability conflict precedence graph view recoverability cascadeless">
+        <h3>4.2 Concurrency Conflicts, Serializability &amp; Recoverability</h3>
+        <p>
+          Concurrent execution improves throughput and CPU utilization, but creates three conflicts if uncontrolled:
+          <strong>Lost Update (W-W)</strong>, <strong>Dirty Read (W-R on uncommitted data)</strong>, and
+          <strong>Unrepeatable Read (R-W changing values mid-transaction)</strong>.
+        </p>
+        <div class="grid-2">
+          <div class="mini-card">
+            <h4>Conflict Serializability (Precedence Graph)</h4>
+            <p>
+              Two ops conflict if they belong to <strong>different transactions</strong>, access the <strong>same item</strong>, and <strong>at least one is a Write</strong>.
+              Draw directed edge <code>Ti -&gt; Tj</code> whenever <code>Ti</code> executes a conflicting op before <code>Tj</code>.
+              <strong>No cycle = Conflict Serializable</strong> (topological order is the serial schedule).
+            </p>
+          </div>
+          <div class="mini-card">
+            <h4>View Serializability (3 Checks)</h4>
+            <p>
+              Two schedules are view equivalent if they have the same:
+              (1) <strong>Initial Read</strong>,
+              (2) <strong>Updated Read</strong> (reads-from source), and
+              (3) <strong>Final Write</strong> on every data item.
+            </p>
+          </div>
+        </div>
+        <ul class="key-list">
+          <li><strong>Non-Recoverable Schedule:</strong> <code>T2</code> reads uncommitted data from <code>T1</code> and commits before <code>T1</code>. Forbidden.</li>
+          <li><strong>Recoverable Schedule:</strong> If <code>Tj</code> reads from <code>Ti</code>, <code>Ti</code> must commit before <code>Tj</code> commits.</li>
+          <li><strong>Cascading Rollback vs. Cascadeless:</strong> Reading uncommitted writes forces dependent transactions to abort if the writer fails. <strong>Cascadeless</strong> schedules allow reading only <em>committed</em> values.</li>
+        </ul>
+      </article>
+
+      <article class="topic-card" data-keywords="validation based protocol optimistic concurrency control occ multiple granularity intention locks is ix six">
+        <h3>4.3 Validation-Based Protocols (OCC) &amp; Multiple Granularity</h3>
+        <div class="grid-2">
+          <div class="mini-card">
+            <h4>Optimistic Concurrency Control (OCC)</h4>
+            <p>Assumes conflicts are rare (zero locks, deadlock-free):</p>
+            <ol class="compact-list">
+              <li><strong>Read Phase:</strong> Read DB; buffer writes in local copies.</li>
+              <li><strong>Validation Phase:</strong> At commit time, verify no concurrent writer modified read/written items.</li>
+              <li><strong>Write Phase:</strong> Apply local updates if valid; else abort and restart.</li>
+            </ol>
+          </div>
+          <div class="mini-card">
+            <h4>Multiple Granularity Locking</h4>
+            <p>Tree hierarchy: <code>DB -&gt; Table -&gt; Page/Row -&gt; Field</code>. Ancestors hold intention locks:</p>
+            <ul class="compact-list">
+              <li><strong>IS:</strong> Descendants will get Shared (<code>S</code>) locks.</li>
+              <li><strong>IX:</strong> Descendants will get Exclusive (<code>X</code>) locks.</li>
+              <li><strong>SIX:</strong> Whole subtree locked in <code>S</code> + <code>IX</code> on some descendants (compatible only with <code>IS</code>).</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="topic-card" data-keywords="recovery log based wal write ahead logging checkpoint redo undo shadow paging restart analysis">
+        <h3>4.4 Crash Recovery: Log-Based (WAL) vs. Shadow Paging</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Technique</th>
+                <th>How It Works</th>
+                <th>On Commit / Crash</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Log-Based (WAL)</strong></td>
+                <td>Records <code>(TxnID, Item, OldVal, NewVal)</code> to stable log <em>before</em> writing data pages to disk. Uses periodic <strong>Checkpoints</strong>.</td>
+                <td><strong>Restart Recovery:</strong> Analysis (find states) -&gt; <strong>Redo</strong> committed txns (NewVal) -&gt; <strong>Undo</strong> active txns (OldVal).</td>
+              </tr>
+              <tr>
+                <td><strong>Shadow Paging</strong></td>
+                <td>Maintains <strong>Current</strong> and <strong>Shadow</strong> page tables. First page write makes a copy and updates only Current; Shadow points to clean pages.</td>
+                <td><strong>Commit:</strong> Discard Shadow table. <strong>Crash:</strong> Discard Current table and revert immediately to Shadow table.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- EXAM TRAPS -->
+    <section id="traps" class="module-section">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Quality Check</span>
+          <h2>5 Slide Quirks to Fix Before the Exam</h2>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Deck &amp; Slide</th>
+              <th>What the Slide Says (Trap)</th>
+              <th>Write This on the Exam Instead</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Basic SQL (S4, S10)</td>
+              <td>Calls <code>LIKE</code> "regular expressions" and says SQL Server uses <code>[?]</code> instead of <code>_</code></td>
+              <td><code>LIKE</code> performs wildcard matching with <code>%</code> and <code>_</code> in standard SQL and SQL Server (<code>?</code> is MS Access).</td>
+            </tr>
+            <tr>
+              <td>Decomposition (S15)</td>
+              <td>"If A -&gt; B and B -&gt; C, then A has a transitive dependency on C"</td>
+              <td><code>C</code> is transitively dependent on <code>A</code> through <code>B</code> (as Slide 16 correctly applies to EmployeeID -&gt; DepartmentLocation).</td>
+            </tr>
+            <tr>
+              <td>External Storage (S17, S19, S26)</td>
+              <td>Slide 17 says primary index is 1:1 per record vs. Slide 26 saying 1 per block; Slide 19 says "Block Hanker"</td>
+              <td>A <strong>sparse</strong> primary index stores 1 entry per block (the <strong>Block Anchor</strong>); a <strong>dense</strong> index stores 1 entry per key value.</td>
+            </tr>
+            <tr>
+              <td>Decomposition (S6-S7)</td>
+              <td>Slide 7 image shows 5 rows even though Slide 6's <code>B</code> column values (2, 5, 3) are all distinct</td>
+              <td>Spurious tuples happen when the join column has <strong>duplicate values</strong> across rows and isn't a key of either decomposed table.</td>
+            </tr>
+            <tr>
+              <td>Validation Protocols (S23)</td>
+              <td>Defines basic 2PL ("cannot acquire new locks after releasing first lock") as Strict 2PL</td>
+              <td>That rule is basic <strong>2PL</strong>. <strong>Strict 2PL</strong> additionally holds all exclusive (<code>X</code>) locks until commit or abort.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PRACTICE QUIZ -->
+    <section id="quiz" class="module-section">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Self-Test</span>
+          <h2>Exam Readiness Quiz</h2>
+        </div>
+        <div class="quiz-controls">
+          <span class="quiz-score" id="quiz-score" aria-live="polite">Score: 0 / 8</span>
+          <button type="button" class="btn-outline" id="reset-quiz">Reset Quiz</button>
+        </div>
+      </div>
+
+      <div id="quiz-container" class="quiz-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Synthesized from your 8 DBMS lecture decks. Use the Print Notes button to export a clean black-and-white PDF copy.</p>
+  </footer>
+
+  <script defer src="app.js"></script>
+</body>
+</html>

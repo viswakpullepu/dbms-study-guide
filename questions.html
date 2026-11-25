@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DBMS Unit III, IV &amp; V Question Bank Solutions</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to question bank</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <span class="brand-title">DBMS Question Bank</span>
+        <span class="brand-meta" id="qb-count-meta">110 Solved Questions (Units III, IV &amp; V)</span>
+      </div>
+
+      <nav class="main-nav" aria-label="Site navigation">
+        <a href="index.html">Revision Notes</a>
+        <a href="questions.html" class="nav-active">Question Bank (110)</a>
+        <a href="#unit-3">Unit III</a>
+        <a href="#unit-4">Unit IV</a>
+        <a href="#unit-5">Unit V</a>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" class="btn-outline" id="theme-toggle" aria-pressed="false">
+          Invert Theme
+        </button>
+        <button type="button" class="btn-solid" id="print-btn">
+          Print Answers
+        </button>
+      </div>
+    </div>
+
+    <div class="toolbar-inner">
+      <label class="search-wrap" for="qb-search">
+        <span class="sr-only">Search questions and answers</span>
+        <input
+          id="qb-search"
+          type="search"
+          placeholder="Search any question (e.g. BCNF, canonical, 2PL, Thomas, B+ tree, extendable)..."
+          autocomplete="off"
+        >
+      </label>
+      <span class="filter-count" id="qb-filter-status" aria-live="polite">Showing 110 of 110 questions</span>
+      <button type="button" class="btn-text" id="qb-clear-search" hidden>Clear</button>
+    </div>
+  </header>
+
+  <main id="main-content" class="page-wrap">
+    <section class="hero">
+      <h1>Unit III, IV &amp; V Exam Solutions</h1>
+      <p class="hero-lead">
+        Complete answers to every Part-A short question and Part-B essay or numerical problem from your question bank pages (Units III, IV, and V). Written for fast understanding and direct exam recall.
+      </p>
+
+      <div class="summary-strip" aria-label="Question breakdown">
+        <div class="summary-cell">
+          <span class="summary-label">Unit III</span>
+          <span class="summary-value">22 Short + 17 Essay</span>
+        </div>
+        <div class="summary-cell">
+          <span class="summary-label">Unit IV</span>
+          <span class="summary-value">20 Short + 15 Essay</span>
+        </div>
+        <div class="summary-cell">
+          <span class="summary-label">Unit V</span>
+          <span class="summary-value">18 Short + 18 Essay</span>
+        </div>
+        <div class="summary-cell">
+          <span class="summary-label">Total Solved</span>
+          <span class="summary-value">110 Questions</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="qb-controls">
+      <div class="qb-filter-group" role="group" aria-label="Filter by Unit">
+        <button type="button" class="filter-pill" data-unit-filter="all" aria-pressed="true">All Units</button>
+        <button type="button" class="filter-pill" data-unit-filter="3" aria-pressed="false">Unit III (39)</button>
+        <button type="button" class="filter-pill" data-unit-filter="4" aria-pressed="false">Unit IV (35)</button>
+        <button type="button" class="filter-pill" data-unit-filter="5" aria-pressed="false">Unit V (36)</button>
+      </div>
+
+      <div class="qb-filter-group" role="group" aria-label="Filter by Part">
+        <button type="button" class="filter-pill" data-part-filter="all" aria-pressed="true">All Parts</button>
+        <button type="button" class="filter-pill" data-part-filter="A" aria-pressed="false">Part-A Short (60)</button>
+        <button type="button" class="filter-pill" data-part-filter="B" aria-pressed="false">Part-B Essay (50)</button>
+      </div>
+
+      <div class="qb-filter-group">
+        <button type="button" class="btn-outline" id="toggle-all-answers" aria-pressed="true">
+          Collapse All
+        </button>
+      </div>
+    </div>
+
+    <div id="qb-empty" class="empty-state" hidden>
+      <p id="qb-empty-msg">No questions matched your filters.</p>
+      <button type="button" class="btn-solid" id="qb-reset-filters">Reset Filters</button>
+    </div>
+
+    <section id="unit-3" class="module-section" data-unit-section="3">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Unit III</span>
+          <h2>Normalization, Functional Dependencies, Triggers &amp; Cursors</h2>
+        </div>
+      </div>
+      <div id="unit-3-list" class="qb-list"></div>
+    </section>
+
+    <section id="unit-4" class="module-section" data-unit-section="4">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Unit IV</span>
+          <h2>Transactions, Concurrency Control, 2PL &amp; Deadlocks</h2>
+        </div>
+      </div>
+      <div id="unit-4-list" class="qb-list"></div>
+    </section>
+
+    <section id="unit-5" class="module-section" data-unit-section="5">
+      <div class="module-header">
+        <div>
+          <span class="module-kicker">Unit V</span>
+          <h2>Recovery Systems, Indexing, Hashing &amp; Query Optimization</h2>
+        </div>
+      </div>
+      <div id="unit-5-list" class="qb-list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>110 solved DBMS exam questions (Units III, IV, V). Click any question header to collapse/expand, or click Print Answers for clean black-and-white study sheets.</p>
+  </footer>
+
+  <script defer src="questions-data.js"></script>
+  <script defer src="questions.js"></script>
+</body>
+</html>
