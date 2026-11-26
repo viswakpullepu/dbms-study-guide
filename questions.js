@@ -25,8 +25,10 @@
 
   function applyTheme(isInverted) {
     root.classList.toggle("inverted", isInverted);
-    themeToggle.setAttribute("aria-pressed", String(isInverted));
-    themeToggle.textContent = isInverted ? "Light Theme" : "Invert Theme";
+    if (themeToggle) {
+      themeToggle.setAttribute("aria-pressed", String(isInverted));
+      themeToggle.textContent = isInverted ? "Light Theme" : "Invert Theme";
+    }
     try {
       localStorage.setItem(THEME_KEY, isInverted ? "inverted" : "light");
     } catch (_err) {
@@ -226,13 +228,17 @@
     }
   });
 
-  themeToggle.addEventListener("click", function () {
-    applyTheme(!root.classList.contains("inverted"));
-  });
+  if (themeToggle) {
+    themeToggle.addEventListener("click", function () {
+      applyTheme(!root.classList.contains("inverted"));
+    });
+  }
 
-  printBtn.addEventListener("click", function () {
-    window.print();
-  });
+  if (printBtn) {
+    printBtn.addEventListener("click", function () {
+      window.print();
+    });
+  }
 
   initTheme();
   buildCards();

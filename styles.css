@@ -107,6 +107,10 @@ body {
   padding-bottom: 10px;
 }
 
+.toolbar-inner:first-child {
+  border-top: none;
+}
+
 .brand-block {
   display: flex;
   flex-direction: column;
@@ -585,6 +589,11 @@ html.inverted .diagram-box svg {
   border-top: 1px solid var(--border);
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+.site-footer a {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 /* Question Bank Filters & Cards */
